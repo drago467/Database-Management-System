@@ -1,21 +1,22 @@
 USE employees;
 
-DROP procedure IF EXISTS emp_salary;
+DROP procedure IF EXISTS emp_avg_salary_out;
 
 DELIMITER $$
 
 USE employees $$
 
-CREATE PROCEDURE emp_salary(IN p_emp_no INTEGER)
+CREATE PROCEDURE emp_avg_salary_out(IN p_emp_no INTEGER,
+								OUT p_avg_salary DECIMAL(10, 2))
 BEGIN
 SELECT 
-	e.first_name, e.last_name, s.salary, s.from_date, s.to_date
-FROM
-	employees e
-		JOIN
-	salaries s ON e.emp_no = s.emp_no
+	AVG(s.salary)
+INTO p_avg_salary 
+FROM employees e JOIN salaries s 
+ON e.emp_no = s.emp_no
 WHERE 
-	e.emp_no = p_emp_no;
+	e.emp_no = p_emp_no
+GROUP BY e.emp_no;
 END $$
 
 DELIMITER ;
